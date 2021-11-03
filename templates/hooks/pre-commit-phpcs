@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+# Application directory on docker
+applicationDirectory='/var/www'
+codingStandard="config/.php-cs"
+phpcsPath="bin/php-cs-fixer"
+phpContainer="%container%"
+
+# Grab the staged files
+stagedFiles=()
+for file in $(git diff --cached --name-only --diff-filter=AM)
+do
+    stagedFiles+=("${applicationDirectory}/${file}")
+done
+
+# Construct the phpcs command.
+command=$(echo "${phpcsPath} fix --config=${codingStandard} --dry-run --diff --using-cache=no --allow-risky=yes --ansi ${stagedFiles[@]}")
+echo "$command"
+
+# Run the command on our docker container and capture the results
+results=$(docker-compose -f docker/docker-compose.yaml exec -T $phpContainer $command)
+
+# Block the commit from going through if needed
+foundErrors=$(grep -o "begin diff" <<< ${results})
+returnCode=0
+
+if [ "$foundErrors" != '' ]
+then
+    echo "${results}" >&2
+
+    command=$(echo "${phpcsPath} fix --config=${codingStandard} --using-cache=no --allow-risky=yes --ansi ${stagedFiles[@]}")
+    results=$(docker-compose -f docker/docker-compose.yaml exec -T $phpContainer $command)
+     
+    echo "You had some phpcs errors, don't forget to add these fixes to git before commiting again!" >&2
+
+    # Exit so you can stage the files and commit again
+    returnCode=1
+fi
+exit $returnCode

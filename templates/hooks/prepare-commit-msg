@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+ISSUE_PATTERN="(.*[-/])?(CLEARFACTS)?([ _-])?([0-9]{4,5})"
+BRANCH_NAME=`echo "$BRANCH_NAME" | sed -E "s#^$ISSUE_PATTERN(.*)#CLEARFACTS\-\4#"`
+BRANCH_NAME="${BRANCH_NAME##*/}"
+BRANCH_IN_COMMIT=$(grep -c "\[$BRANCH_NAME\]" $1)
+if [ -n "$BRANCH_NAME" ] && ! [[ $BRANCH_IN_COMMIT -ge 1 ]]; then 
+  sed -i.bak -e "1s/^/[$BRANCH_NAME] /g" $1
+fi
