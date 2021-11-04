@@ -14,5 +14,9 @@
             "Clearfacts\\Bundle\\CodestyleBundle\\": "src/" 
         }
     },
-    "minimum-stability": "dev"
+    "bin": ["bin/cf-codestyle"],
+    "config": {
+        "bin-dir": "bin",
+        "sort-packages": true
+    }
 }
