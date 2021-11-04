@@ -14,6 +14,8 @@ use Symfony\Component\Finder\Finder;
 
 final class SetupGitHooksCommand extends Command
 {
+    use FilesystemTrait;
+
     protected static $defaultName = 'clearfacts:codestyle:hooks-setup';
 
     protected function configure(): void
@@ -29,13 +31,13 @@ final class SetupGitHooksCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Preparing git-hooks');
 
-        $this->setup($input->getOption('root'));
+        $this->setup($input->getOption('root'), $input->getOption('container'));
 
         $io->success('Git hooks copied!');
         return 0;
     }
 
-    private function setup(string $root): void
+    private function setup(string $root, string $container): void
     {
         /** @var SplFileInfo $file */
         foreach ($this->getFinder()->files()->in(__DIR__ . '/../../templates/hooks') as $file) {
@@ -50,21 +52,11 @@ final class SetupGitHooksCommand extends Command
             file_put_contents(
                 $gitHooksPath,
                 strtr(file_get_contents($gitHooksPath), [
-                    '%container%' => $input->getOption('container'),
+                    '%container%' => $container,
                 ])
             );
 
             $this->getFileSystem()->chmod([$gitHooksPath], 0755);
         }
-    }
-
-    private function getFileSystem(): Filesystem
-    {
-        return new Filesystem();
-    }
-
-    private function getFinder(): Finder
-    {
-        return new Finder();
     }
 }

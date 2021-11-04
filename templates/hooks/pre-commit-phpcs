@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+$(bin/cs-codestyle clearfacts:codestyle:copy-cs-config)
+
 # Application directory on docker
 applicationDirectory='/var/www'
 codingStandard="config/.php-cs"
