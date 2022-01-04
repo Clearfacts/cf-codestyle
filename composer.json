@@ -1,5 +1,5 @@
 {
-    "name": "clearfacts/codestyle",
+    "name": "clearfacts/cf-codestyle",
     "type": "package",
     "description": "Provides integration with php codesniffer for your symfony projects",
     "require": {
