@@ -1,2 +1,5 @@
 vendor/
 composer.lock
+config/
+bin/
+!bin/cf-codestyle*

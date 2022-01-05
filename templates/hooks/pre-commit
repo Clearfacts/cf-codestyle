@@ -22,7 +22,7 @@ scriptPath="$(dirname -- "$thisScript")"
 #hooks="pre-commit-phpcs pre-commit-phpstan ..."
 ###########################################################
 
-hooks="pre-commit-phpcs"
+hooks="pre-commit-phpcs %custom_hooks%"
 
 for hook in $hooks
 do

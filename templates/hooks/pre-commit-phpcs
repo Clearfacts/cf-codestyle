@@ -1,12 +1,9 @@
 #!/usr/bin/env sh
 
-$(bin/cs-codestyle clearfacts:codestyle:copy-cs-config)
+make copy-phpcs-config
 
-# Application directory on docker
-applicationDirectory='/var/www'
-codingStandard="config/.php-cs"
-phpcsPath="bin/php-cs-fixer"
-phpContainer="%container%"
+# Application directory
+applicationDirectory='.'
 
 # Grab the staged files
 stagedFiles=()
@@ -14,13 +11,17 @@ for file in $(git diff --cached --name-only --diff-filter=AM)
 do
     stagedFiles+=("${applicationDirectory}/${file}")
 done
+files="${stagedFiles[@]}"
 
 # Construct the phpcs command.
-command=$(echo "${phpcsPath} fix --config=${codingStandard} --dry-run --diff --using-cache=no --allow-risky=yes --ansi ${stagedFiles[@]}")
+command=$(echo "make lint-phpcs files=\"${files}\"")
 echo "$command"
 
 # Run the command on our docker container and capture the results
-results=$(docker-compose -f docker/docker-compose.yaml exec -T $phpContainer $command)
+make lint-phpcs files="${files}" >> results.txt
+
+results=$(cat results.txt)
+$(rm results.txt)
 
 # Block the commit from going through if needed
 foundErrors=$(grep -o "begin diff" <<< ${results})
@@ -30,8 +31,10 @@ if [ "$foundErrors" != '' ]
 then
     echo "${results}" >&2
 
-    command=$(echo "${phpcsPath} fix --config=${codingStandard} --using-cache=no --allow-risky=yes --ansi ${stagedFiles[@]}")
-    results=$(docker-compose -f docker/docker-compose.yaml exec -T $phpContainer $command)
+    command=$(echo "make lint-phpcs-fix files=\"${files}\"")
+    echo "$command"
+    
+    make lint-phpcs-fix options="--quiet" files="${files}"
      
     echo "You had some phpcs errors, don't forget to add these fixes to git before commiting again!" >&2
 

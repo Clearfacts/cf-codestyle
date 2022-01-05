@@ -5,7 +5,9 @@
     "require": {
         "php": ">=7.3",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "symfony/console": "5.3.*"
+        "symfony/console": "^5.4|^4.0",
+        "symfony/filesystem": "^5.4|^4.0",
+        "symfony/finder": "^5.4|^4.0"
     },
     "autoload": {
         "psr-4": { 
@@ -13,6 +15,15 @@
         }
     },
     "bin": ["bin/cf-codestyle"],
+    "scripts": {
+        "set-up": [
+            "@copy-phpcs-config",
+            "./bin/cf-codestyle clearfacts:codestyle:hooks-setup"
+        ],
+        "copy-phpcs-config": "bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
+        "lint-phpcs": "bin/php-cs-fixer fix --config=config/.php-cs --dry-run --diff --using-cache=no --allow-risky=yes --ansi src/",
+        "lint-phpcs-fix": "bin/php-cs-fixer fix --config=config/.php-cs --diff --using-cache=no --allow-risky=yes --ansi src/"
+    },
     "config": {
         "bin-dir": "bin",
         "sort-packages": true
