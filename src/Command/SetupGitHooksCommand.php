@@ -21,7 +21,7 @@ final class SetupGitHooksCommand extends Command
         $this
             ->setDescription('Setup git hooks for code quality')
             ->addOption('root', 'r', InputOption::VALUE_OPTIONAL, 'Root directory of the project', '.')
-            ->addOption('custom-hooks-dir', 'chr', InputOption::VALUE_OPTIONAL, 'Extra hooks to be checked pre-commit', '.');
+            ->addOption('custom-hooks-dir', 'chr', InputOption::VALUE_OPTIONAL, 'Extra hooks to be checked pre-commit', null);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -40,17 +40,19 @@ final class SetupGitHooksCommand extends Command
     {
         $customHooks = [];
         /** @var SplFileInfo $file */
-        foreach ($this->getFinder()->files()->in($root . $customHooksDir) as $file) {
-            $gitHooksPath = $root . '/.git/hooks/' . $file->getFilename();
-            $this->getFileSystem()->copy(
-                $file->getRealPath(),
-                $gitHooksPath,
-                true
-            );
+        if (null !== $customHooksDir) {
+            foreach ($this->getFinder()->files()->in($root . $customHooksDir) as $file) {
+                $gitHooksPath = $root . '/.git/hooks/' . $file->getFilename();
+                $this->getFileSystem()->copy(
+                    $file->getRealPath(),
+                    $gitHooksPath,
+                    true
+                );
 
-            $customHooks[] = $file->getFilename();
+                $customHooks[] = $file->getFilename();
 
-            $this->getFileSystem()->chmod([$gitHooksPath], 0755);
+                $this->getFileSystem()->chmod([$gitHooksPath], 0755);
+            }
         }
 
         foreach ($this->getFinder()->files()->in(__DIR__ . '/../../templates/hooks') as $file) {
