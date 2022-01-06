@@ -36,7 +36,7 @@ final class SetupGitHooksCommand extends Command
         return 0;
     }
 
-    private function setup(string $root, string $customHooksDir): void
+    private function setup(string $root, ?string $customHooksDir): void
     {
         $customHooks = [];
         /** @var SplFileInfo $file */
