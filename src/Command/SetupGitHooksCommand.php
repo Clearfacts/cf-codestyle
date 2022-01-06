@@ -57,15 +57,10 @@ final class SetupGitHooksCommand extends Command
 
         foreach ($this->getFinder()->files()->in(__DIR__ . '/../../templates/hooks') as $file) {
             $gitHooksPath = $root . '/.git/hooks/' . $file->getFilename();
-            $this->getFileSystem()->copy(
-                $file->getRealPath(),
+            $this->getFileSystem()->remove($gitHooksPath);
+            $this->getFileSystem()->dumpFile(
                 $gitHooksPath,
-                true
-            );
-
-            file_put_contents(
-                $gitHooksPath,
-                strtr(file_get_contents($gitHooksPath), [
+                strtr($file->getContents(), [
                     '%custom_hooks%' => implode(' ', $customHooks),
                 ])
             );
