@@ -9,9 +9,14 @@
         "symfony/filesystem": "^5.3|^4.4",
         "symfony/finder": "^5.3|^4.4"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "symfony/test-pack": "^1.0"
+    },
     "autoload": {
         "psr-4": { 
-            "Clearfacts\\Bundle\\CodestyleBundle\\": "src/" 
+            "Clearfacts\\Bundle\\CodestyleBundle\\": "src/",
+            "Clearfacts\\Bundle\\CodestyleBundle\\Tests\\": "tests/" 
         }
     },
     "bin": ["bin/cf-codestyle"],
@@ -21,8 +26,8 @@
             "./bin/cf-codestyle clearfacts:codestyle:hooks-setup"
         ],
         "copy-phpcs-config": "bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
-        "lint-phpcs": "bin/php-cs-fixer fix --config=config/.php-cs --dry-run --diff --using-cache=no --allow-risky=yes --ansi src/",
-        "lint-phpcs-fix": "bin/php-cs-fixer fix --config=config/.php-cs --diff --using-cache=no --allow-risky=yes --ansi src/"
+        "lint-phpcs": "bin/php-cs-fixer fix --config=config/.php-cs --dry-run --diff --using-cache=no --allow-risky=yes --ansi src/ tests/",
+        "lint-phpcs-fix": "bin/php-cs-fixer fix --config=config/.php-cs --diff --using-cache=no --allow-risky=yes --ansi src/ tests/"
     },
     "config": {
         "bin-dir": "bin",

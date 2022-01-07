@@ -28,3 +28,7 @@ lint-phpcs: ## Check phpcs.
 
 lint-phpcs-fix: ## Check phpcs and try to automatically fix issues.
 	@bin/php-cs-fixer fix --config=./config/.php-cs --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+
+args?="tests"
+test: ## Run tests.
+	@bin/phpunit $(args)
