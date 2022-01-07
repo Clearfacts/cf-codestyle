@@ -3,7 +3,7 @@
 This component provides an integration with php-cs-fixer
 - every time you commit, the installed package hooks will run and fix the styling.
 - commiting is blocked when a staged file has invalid styling
-- 
+
 ## Installation
 
 - Add the following to composer:
@@ -32,6 +32,7 @@ This component provides an integration with php-cs-fixer
 ```
 ### Composer script parameters
 > custom-hooks-dir => Here you can place your custom hooks that are executed on pre-commit
+
 > config-dir => This is where the codestyle configuration files will be copied to
 
 
