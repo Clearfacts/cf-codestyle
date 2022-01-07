@@ -8,7 +8,10 @@ applicationDirectory='.'
 # Grab the staged files
 stagedFiles=($(git diff --cached --name-only --diff-filter=AM))
 files="${stagedFiles[@]}"
-
+if [ "$files" = '' ]
+then
+  exit 0
+fi
 # Construct the phpcs command.
 command=$(echo "make -s lint-phpcs files=\"${files}\"")
 echo "$command"
