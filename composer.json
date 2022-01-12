@@ -26,8 +26,8 @@
             "./bin/cf-codestyle clearfacts:codestyle:hooks-setup"
         ],
         "copy-phpcs-config": "bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
-        "lint-phpcs": "bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi src/ tests/",
-        "lint-phpcs-fix": "bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi src/ tests/"
+        "lint-phpcs": "bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi src/ tests/",
+        "lint-phpcs-fix": "bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi src/ tests/"
     },
     "config": {
         "bin-dir": "bin",

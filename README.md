@@ -27,9 +27,9 @@ This component provides an integration with php-cs-fixer
     "scripts": {
         "set-up": [
            "@copy-phpcs-config",
-           "vendor/bin/cf-codestyle clearfacts:codestyle:hooks-setup" // optional parameter --custom-hooks-dir=custom-dir (default is null)
+           "vendor/bin/cf-codestyle clearfacts:codestyle:hooks-setup"
         ],
-        "copy-phpcs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config", // optional parameter --config-dir=./app/config (default is config)
+        "copy-phpcs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
   ...
 ```
 
@@ -46,10 +46,10 @@ This component provides an integration with php-cs-fixer
     options?=
     files?=src/
     phpcs: ## Check phpcs.
-        @bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+        @bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
     
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
-        @bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+        @bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 ```
 
 - run `make setup`
@@ -91,8 +91,8 @@ When using docker-compose, your `Makefile` will slightly defer. Important here i
     options?=
     files?=src/
     phpcs: ## Check phpcs.
-        @make det cmd="bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+        @make det cmd="bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
     
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
-        @make det cmd="bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+        @make det cmd="bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
 ```
