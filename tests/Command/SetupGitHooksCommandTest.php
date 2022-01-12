@@ -11,12 +11,21 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SetupGitHooksCommandTest extends TestCase
 {
-    public function testExecute()
+    private const GIT_HOOKS_PATH = __DIR__ . '/.git/hooks/';
+
+    public function setUp(): void
+    {
+        $this->removeAllFiles(self::GIT_HOOKS_PATH);
+    }
+
+    public function tearDown(): void
+    {
+        $this->removeAllFiles(self::GIT_HOOKS_PATH);
+    }
+
+    public function testExecute(): void
     {
         // Given
-        $gitHooksPath = __DIR__ . '/.git/hooks/';
-        $this->removeAllFiles($gitHooksPath);
-        
         $application = new Application();
         $application->add(new SetupGitHooksCommand());
 
@@ -33,18 +42,18 @@ class SetupGitHooksCommandTest extends TestCase
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Preparing git-hooks', $output);
-        $this->assertStringContainsString('Git hooks copied!', $output);
-        $this->assertTrue(file_exists($gitHooksPath . 'pre-commit'));
-        $this->assertTrue(file_exists($gitHooksPath . 'pre-commit-phpcs'));
-        $this->assertTrue(file_exists($gitHooksPath . 'test-hook'));
-        $this->assertStringContainsString('test-hook', file_get_contents($gitHooksPath . '/pre-commit'));
-
-        $this->removeAllFiles($gitHooksPath);
+        $this->assertStringContainsString('[OK] Custom hooks copied', $output);
+        $this->assertStringContainsString('[OK] Default hooks copied', $output);
+        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit'));
+        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-phpcs'));
+        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'test-hook'));
+        $this->assertStringContainsString('test-hook', file_get_contents(self::GIT_HOOKS_PATH . '/pre-commit'));
     }
 
-    private function removeAllFiles(string $dir)
+    private function removeAllFiles(string $dir): void
     {
-        foreach (scandir($dir) as $file) {
+        $files = @scandir($dir) ?: [];
+        foreach ($files as $file) {
             if ('.' === $file || '..' === $file) {
                 continue;
             }

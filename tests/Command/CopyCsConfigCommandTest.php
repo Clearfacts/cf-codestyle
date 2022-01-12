@@ -11,12 +11,21 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class CopyCsConfigCommandTest extends TestCase
 {
-    public function testExecute()
+    private const PHPCS_PATH = __DIR__ . '/.php-cs-fixer.dist.php';
+
+    public function setUp(): void
+    {
+        @unlink(self::PHPCS_PATH);
+    }
+
+    public function tearDown(): void
+    {
+        @unlink(self::PHPCS_PATH);
+    }
+
+    public function testExecute(): void
     {
         // Given
-        $phpcsConfigPath = __DIR__ . '/.php-cs';
-        @unlink($phpcsConfigPath);
-
         $application = new Application();
         $application->add(new CopyCsConfigCommand());
 
@@ -26,17 +35,14 @@ class CopyCsConfigCommandTest extends TestCase
         // When
         $commandTester->execute([
             '--root' => __DIR__,
-            '--config-dir' => '.'
         ]);
 
         // Then
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Preparing to copy cs config', $output);
-        $this->assertStringContainsString('Cs config copied!', $output);
-        $this->assertTrue(file_exists($phpcsConfigPath));
-        $this->assertStringContainsString('PhpCsFixer\Config', file_get_contents($phpcsConfigPath));
-
-        @unlink($phpcsConfigPath);
+        $this->assertStringContainsString('[OK] Copied cs config', $output);
+        $this->assertTrue(file_exists(self::PHPCS_PATH));
+        $this->assertStringContainsString('PhpCsFixer\Config', file_get_contents(self::PHPCS_PATH));
     }
 }

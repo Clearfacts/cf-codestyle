@@ -19,6 +19,8 @@ This component provides an integration with php-cs-fixer
 
 - `composer require clearfacts/cf-codestyle`
 
+## Usage
+
 - After composer has sucessfully run, add these scripts to composer.json:
 ```json
   ...,
@@ -30,11 +32,6 @@ This component provides an integration with php-cs-fixer
         "copy-phpcs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config", // optional parameter --config-dir=./app/config (default is config)
   ...
 ```
-### Composer script parameters
-> custom-hooks-dir => Here you can place your custom hooks that are executed on pre-commit
-
-> config-dir => This is where the codestyle configuration files will be copied to
-
 
 - Add a Makefile (or modify your existing one) in the root directory of your project and add the following content:
 
@@ -48,14 +45,54 @@ This component provides an integration with php-cs-fixer
     
     options?=
     files?=src/
-    lint-phpcs: ## Check phpcs.
-        @bin/php-cs-fixer fix --config=./config/.php-cs --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+    phpcs: ## Check phpcs.
+        @bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
     
-    lint-phpcs-fix: ## Check phpcs and try to automatically fix issues.
-        @bin/php-cs-fixer fix --config=./config/.php-cs --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+    phpcs-fix: ## Check phpcs and try to automatically fix issues.
+        @bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 ```
 
-- run make setup
-- add your copied config file (.php-cs) to .gitignore
+- run `make setup`
+- add your copied config file (.php-cs-fixer.dist.php) to .gitignore
 - make a commit and check that the hooks are correctly run!
-    You can test this by changing a file to non-valid styling and check if is fixed after committing.
+    
+You can test this by changing a file to non-valid styling and check if is fixed after committing.
+
+### Commands
+
+`vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config`
+
+- `--root` When you need to copy the cs config to a different directory, by default the root directory of your project
+
+`vendor/bin/cf-codestyle clearfacts:codestyle:hooks-setup`
+
+- `--root` The directory your .git/hooks folder is located, by default the root of your project
+- `--custom-hooks-dir` When you have some custom pre-commit hooks you want to install, you can place them in this folder
+
+### Docker
+
+When using docker-compose, your `Makefile` will slightly defer. Important here is that the commands are executed with -T.
+
+```make
+    ...
+    dc: ## Does docker-compose with the right projectname and config, so you can call anything allowed through `docker-compose`, passed through the parameter `cmd`.
+	    @docker-compose -p $(name) -f docker/docker-compose.yaml $(cmd)
+
+    det: ## An extension of `make dc` that calls `docker-compose exec` on the php-container.
+	    @make dc cmd="exec -T $(phpcontainer) $(cmd)"
+
+    # Linting and testing
+    setup: ## Setup git-hooks
+	    @make det cmd="composer run set-up"
+
+    copy-phpcs-config: ## Setup phpcs config
+        @make det cmd="composer run copy-phpcs-config"
+    
+    options?=
+    files?=src/
+    phpcs: ## Check phpcs.
+        @make det cmd="bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+    
+    phpcs-fix: ## Check phpcs and try to automatically fix issues.
+        @make det cmd="bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+```

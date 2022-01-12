@@ -16,6 +16,11 @@ final class SetupGitHooksCommand extends Command
 
     protected static $defaultName = 'clearfacts:codestyle:hooks-setup';
 
+    /**
+     * @var SymfonyStyle
+     */
+    private $io;
+
     protected function configure(): void
     {
         $this
@@ -24,16 +29,18 @@ final class SetupGitHooksCommand extends Command
             ->addOption('custom-hooks-dir', 'chr', InputOption::VALUE_OPTIONAL, 'Extra hooks to be checked pre-commit', null);
     }
 
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->io = new SymfonyStyle($input, $output);
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->title('Preparing git-hooks');
+        $this->io->title('Preparing git-hooks');
 
         $this->setup($input->getOption('root'), $input->getOption('custom-hooks-dir'));
 
-        $io->success('Git hooks copied!');
-
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function setup(string $root, ?string $customHooksDir): void
@@ -53,6 +60,8 @@ final class SetupGitHooksCommand extends Command
 
                 $this->getFileSystem()->chmod([$gitHooksPath], 0755);
             }
+
+            $this->io->success('Custom hooks copied');
         }
 
         foreach ($this->getFinder()->files()->in(__DIR__ . '/../../templates/hooks') as $file) {
@@ -67,5 +76,7 @@ final class SetupGitHooksCommand extends Command
 
             $this->getFileSystem()->chmod([$gitHooksPath], 0755);
         }
+
+        $this->io->success('Default hooks copied');
     }
 }

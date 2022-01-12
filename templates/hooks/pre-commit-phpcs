@@ -2,9 +2,6 @@
 
 make -s copy-phpcs-config
 
-# Application directory
-applicationDirectory='.'
-
 # Grab the staged files
 stagedFiles=($(git diff --cached --name-only --diff-filter=AM))
 files="${stagedFiles[@]}"
@@ -13,11 +10,11 @@ then
   exit 0
 fi
 # Construct the phpcs command.
-command=$(echo "make -s lint-phpcs files=\"${files}\"")
+command=$(echo "make -s phpcs files=\"${files}\"")
 echo "$command"
 
 # Run the command on our docker container and capture the results
-make -s lint-phpcs files="${files}" >> results.txt
+make -s phpcs files="${files}" >> results.txt
 
 results=$(cat results.txt)
 $(rm results.txt)
@@ -30,10 +27,10 @@ if [ "$foundErrors" != '' ]
 then
     echo "${results}" >&2
 
-    command=$(echo "make -s lint-phpcs-fix options=\"--quiet\" files=\"${files}\"")
+    command=$(echo "make -s phpcs-fix options=\"--quiet\" files=\"${files}\"")
     echo "$command"
     
-    make -s lint-phpcs-fix options="--quiet" files="${files}"
+    make -s phpcs-fix options="--quiet" files="${files}"
      
     echo "You had some phpcs errors, don't forget to add these fixes to git before commiting again!" >&2
 

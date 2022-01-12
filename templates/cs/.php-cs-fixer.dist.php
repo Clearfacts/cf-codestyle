@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-$finder = PhpCsFixer\Finder::create()
-    ->exclude('vendor')
-    ->exclude('var')
-;
+$finder = PhpCsFixer\Finder::create();
 
 return (new PhpCsFixer\Config())
     ->setRules([

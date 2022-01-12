@@ -23,11 +23,11 @@ copy-phpcs-config: ## Setup phpcs config
 
 options?=
 files?=src/
-lint-phpcs: ## Check phpcs.
-	@bin/php-cs-fixer fix --config=./config/.php-cs --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+phpcs: ## Check phpcs.
+	@bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
-lint-phpcs-fix: ## Check phpcs and try to automatically fix issues.
-	@bin/php-cs-fixer fix --config=./config/.php-cs --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+phpcs-fix: ## Check phpcs and try to automatically fix issues.
+	@bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
 args?="tests"
 test: ## Run tests.
