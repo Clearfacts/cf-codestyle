@@ -14,20 +14,20 @@ init: ## Setup this project.
 composer: ## Do a composer install for the php project.
 	@composer install
 
-# Linting and testing
 setup: ## Setup git-hooks
 	@composer run set-up
 
 copy-phpcs-config: ## Setup phpcs config
 	@composer run copy-phpcs-config
 
+# Linting and testing
 options?=
-files?=src/
+files?="src\ tests"
 phpcs: ## Check phpcs.
-	@bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
 phpcs-fix: ## Check phpcs and try to automatically fix issues.
-	@bin/php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
 args?="tests"
 test: ## Run tests.

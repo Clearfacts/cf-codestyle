@@ -29,7 +29,7 @@ final class SetupGitHooksCommand extends Command
             ->addOption('custom-hooks-dir', 'chr', InputOption::VALUE_OPTIONAL, 'Extra hooks to be checked pre-commit', null);
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
@@ -40,7 +40,7 @@ final class SetupGitHooksCommand extends Command
 
         $this->setup($input->getOption('root'), $input->getOption('custom-hooks-dir'));
 
-        return Command::SUCCESS;
+        return 0;
     }
 
     private function setup(string $root, ?string $customHooksDir): void

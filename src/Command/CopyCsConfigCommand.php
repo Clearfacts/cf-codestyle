@@ -31,7 +31,7 @@ final class CopyCsConfigCommand extends Command
             ->addOption('root', 'r', InputOption::VALUE_OPTIONAL, 'Root directory of the project', '.');
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
@@ -42,7 +42,7 @@ final class CopyCsConfigCommand extends Command
 
         $this->setup($input->getOption('root'));
 
-        return Command::SUCCESS;
+        return 0;
     }
 
     private function setup(string $root): void
