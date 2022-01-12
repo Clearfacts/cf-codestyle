@@ -17,7 +17,7 @@ This component provides an integration with php-cs-fixer
     ...
 ```
 
-- `composer require clearfacts/cf-codestyle`
+- `composer require clearfacts/cf-codestyle --dev`
 
 ## Usage
 
