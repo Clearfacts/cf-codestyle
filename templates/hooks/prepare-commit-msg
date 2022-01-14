@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 ISSUE_PATTERN="(.*[-/])?(CLEARFACTS)?([ _-])?([0-9]{4,5})"
 BRANCH_NAME=`echo "$BRANCH_NAME" | sed -E "s#^$ISSUE_PATTERN(.*)#CLEARFACTS\-\4#"`
