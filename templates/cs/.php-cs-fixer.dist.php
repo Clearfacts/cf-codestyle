@@ -9,8 +9,6 @@ return (new PhpCsFixer\Config())
         '@Symfony' => true,
         'concat_space' => ['spacing' => 'one'],
         'declare_strict_types' => true,
-        'declare_equal_normalize' => true,
-        'declare_parentheses' => true,
     ])
     ->setFinder($finder)
 ;
