@@ -9,6 +9,7 @@ return (new PhpCsFixer\Config())
         '@Symfony' => true,
         'concat_space' => ['spacing' => 'one'],
         'declare_strict_types' => true,
+        'php_unit_method_casing' => ['case' => 'camel_case'],
     ])
     ->setFinder($finder)
 ;
