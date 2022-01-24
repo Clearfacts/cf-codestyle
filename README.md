@@ -4,6 +4,10 @@ This component provides an integration with php-cs-fixer
 - every time you commit, the installed package hooks will run and fix the styling.
 - commiting is blocked when a staged file has invalid styling
 
+## Rules
+
+At the moment we have some general rules applied, bundled under the @Symfony directive in our (phpcs config)[templates/cs/.php-cs-fixer.dist.php]. This directive includes PSR-12. For documentation see (FriendsOfPHP/PHP-CS-Fixer)[https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/master/doc/ruleSets/Symfony.rst]. 
+
 ## Installation
 
 - Add the following to composer:

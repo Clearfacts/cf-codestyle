@@ -1,4 +1,4 @@
-# cf-air makefile
+# cf-codestyle makefile
 
 .DEFAULT_GOAL := list
 
