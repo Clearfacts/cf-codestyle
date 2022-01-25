@@ -27,6 +27,7 @@ final class CopyCsConfigCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setName(self::$defaultName)
             ->setDescription('Copy latest code sniffing config')
             ->addOption('root', 'r', InputOption::VALUE_OPTIONAL, 'Root directory of the project', '.');
     }

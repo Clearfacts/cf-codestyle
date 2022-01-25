@@ -24,6 +24,7 @@ final class SetupGitHooksCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setName(self::$defaultName)
             ->setDescription('Setup git hooks for code quality')
             ->addOption('root', 'r', InputOption::VALUE_OPTIONAL, 'Root directory of the project', '.')
             ->addOption('custom-hooks-dir', 'chr', InputOption::VALUE_OPTIONAL, 'Extra hooks to be checked pre-commit', null);
