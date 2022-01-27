@@ -37,8 +37,17 @@ At the moment we have some general rules applied, bundled under the @Symfony dir
   ...
 ```
 
-- Add a Makefile (or modify your existing one) in the root directory of your project and add the following content:
 
+- Add a Makefile (or modify your existing one) in the root directory of your project and add the following content.
+Depending on whether your project is running locally, or via docker-compose, the Makefile is slightly different:
+ 
+ 
+ -  [Using local setup](#local-setup)
+  
+ - [Using docker-compose](#docker-setup)
+
+
+### Local setup {#local-setup}
 ```make
     # Linting and testing
     setup: ## Setup git-hooks
@@ -50,11 +59,40 @@ At the moment we have some general rules applied, bundled under the @Symfony dir
     options?=
     files?=src/
     phpcs: ## Check phpcs.
-        @bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+        @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
     
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
-        @bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+        @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 ```
+
+### Docker setup {#docker-setup}
+
+When using docker-compose, your `Makefile` will slightly differ. Important here is that the commands are executed with -T.
+
+```make
+    ...
+    dc: ## Does docker-compose with the right projectname and config, so you can call anything allowed through `docker-compose`, passed through the parameter `cmd`.
+	    @docker-compose -p $(name) -f docker/docker-compose.yaml $(cmd)
+
+    det: ## An extension of `make dc` that calls `docker-compose exec` on the php-container.
+	    @make dc cmd="exec -T $(phpcontainer) $(cmd)"
+
+    # Linting and testing
+    setup: ## Setup git-hooks
+	    @make det cmd="composer.phar run set-up"
+
+    copy-phpcs-config: ## Setup phpcs config
+        @make det cmd="composer.phar run copy-phpcs-config"
+    
+    options?=
+    files?=src/
+    phpcs: ## Check phpcs.
+        @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+    
+    phpcs-fix: ## Check phpcs and try to automatically fix issues.
+        @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+```
+
 
 - run `make setup`
 - add your copied config file (.php-cs-fixer.dist.php) to .gitignore
@@ -73,30 +111,3 @@ You can test this by changing a file to non-valid styling and check if is fixed 
 - `--root` The directory your .git/hooks folder is located, by default the root of your project
 - `--custom-hooks-dir` When you have some custom pre-commit hooks you want to install, you can place them in this folder
 
-### Docker
-
-When using docker-compose, your `Makefile` will slightly defer. Important here is that the commands are executed with -T.
-
-```make
-    ...
-    dc: ## Does docker-compose with the right projectname and config, so you can call anything allowed through `docker-compose`, passed through the parameter `cmd`.
-	    @docker-compose -p $(name) -f docker/docker-compose.yaml $(cmd)
-
-    det: ## An extension of `make dc` that calls `docker-compose exec` on the php-container.
-	    @make dc cmd="exec -T $(phpcontainer) $(cmd)"
-
-    # Linting and testing
-    setup: ## Setup git-hooks
-	    @make det cmd="composer run set-up"
-
-    copy-phpcs-config: ## Setup phpcs config
-        @make det cmd="composer run copy-phpcs-config"
-    
-    options?=
-    files?=src/
-    phpcs: ## Check phpcs.
-        @make det cmd="bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
-    
-    phpcs-fix: ## Check phpcs and try to automatically fix issues.
-        @make det cmd="bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
-```
