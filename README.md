@@ -47,7 +47,7 @@ Depending on whether your project is running locally, or via docker-compose, the
  - [Using docker-compose](#docker-setup)
 
 
-### Local setup {#local-setup}
+### Local setup
 ```make
     # Linting and testing
     setup: ## Setup git-hooks
@@ -65,7 +65,7 @@ Depending on whether your project is running locally, or via docker-compose, the
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 ```
 
-### Docker setup {#docker-setup}
+### Docker setup
 
 When using docker-compose, your `Makefile` will slightly differ. Important here is that the commands are executed with -T.
 
