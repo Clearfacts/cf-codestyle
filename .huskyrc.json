@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "pre-commit": [
+      "echo committing as $(git config user.name)",
+      "bin/console lint:yaml app/config docker/docker-compose*.yaml --parse-tags --ansi --no-interaction",
+      "bin/console lint:twig",
+      "vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no --allow-risky=yes --ansi"
+    ],
+    "pre-push": [
+      "./runTests.sh",
+      "vendor/bin/codecept run"
+    ],
+    "post-merge": "composer install"
+  }
+}
