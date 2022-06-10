@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Grab the staged files
+stagedFiles=($(git diff --cached --name-only --diff-filter=AM))
+files="${stagedFiles[@]}"
+if [ "$files" = '' ]
+then
+  exit 0
+fi
+
+# Construct the twig linting command.
+command=$(echo "make -s lint:twig ${files}")
+echo "$command"
+
+# Run the command on our docker container and capture the results
+make -s lint:twig ${files} >> results.txt
+
+results=$(cat results.txt)
+$(rm results.txt)
+
+# Block the commit from going through if needed
+foundErrors=$(grep -o "begin diff" <<< ${results})
+returnCode=0
+
+if [ "$foundErrors" != '' ]
+then
+    echo "${results}" >&2
+
+    command=$(echo "make -s lint:twig ${files}")
+    echo "$command"
+
+    make -s lint:twig ${files}
+
+    echo "You had some twig errors, don't forget to add these fixes to git before commiting again!" >&2
+
+    # Exit so you can stage the files and commit again
+    returnCode=1
+fi
+exit $returnCode
