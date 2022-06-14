@@ -53,8 +53,6 @@ final class CopyCsConfigCommand extends Command
         $phpcsConfig = $root . '/.php-cs-fixer.dist.php';
         $modified = @filemtime($phpcsConfig);
         if ($modified && (time() - $modified < 604800)) {
-            $this->io->warning('Cs config already exists and is less than a week old');
-
             return;
         }
 
@@ -87,8 +85,6 @@ final class CopyCsConfigCommand extends Command
         $lintConfig = $root . '/.eslintrc.dist';
         $modified = @filemtime($lintConfig);
         if ($modified && (time() - $modified < 604800)) {
-            $this->io->warning('Lint config already exists and is less than a week old');
-
             return;
         }
 

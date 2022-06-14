@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-make -s copy-cs-config
-
 # Grab the staged files
 stagedFiles=($(git diff --cached --name-only --diff-filter=AM))
 files="${stagedFiles[@]}"
