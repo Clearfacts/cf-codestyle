@@ -12,15 +12,18 @@ use Symfony\Component\Console\Tester\CommandTester;
 class CopyCsConfigCommandTest extends TestCase
 {
     private const PHPCS_PATH = __DIR__ . '/.php-cs-fixer.dist.php';
+    private const ESLINT_PATH = __DIR__ . '/.eslintrc';
 
     public function setUp(): void
     {
         @unlink(self::PHPCS_PATH);
+        @unlink(self::ESLINT_PATH);
     }
 
     public function tearDown(): void
     {
         @unlink(self::PHPCS_PATH);
+        @unlink(self::ESLINT_PATH);
     }
 
     public function testExecute(): void
@@ -43,6 +46,8 @@ class CopyCsConfigCommandTest extends TestCase
         $this->assertStringContainsString('Preparing to copy cs config', $output);
         $this->assertStringContainsString('[OK] Copied cs config', $output);
         $this->assertTrue(file_exists(self::PHPCS_PATH));
+        $this->assertTrue(file_exists(self::ESLINT_PATH));
         $this->assertStringContainsString('PhpCsFixer\Config', file_get_contents(self::PHPCS_PATH));
+        $this->assertStringContainsString('eslint:recommended', file_get_contents(self::ESLINT_PATH));
     }
 }
