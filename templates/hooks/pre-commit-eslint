@@ -10,7 +10,7 @@ then
   exit 0
 fi
 
-# Construct the phpcs command.
+# Construct the eslint command.
 command=$(echo "make -s eslint files=\"${files}\"")
 echo "$command"
 

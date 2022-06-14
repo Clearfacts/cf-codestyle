@@ -53,7 +53,7 @@ Depending on whether your project is running locally, or via docker-compose, the
     setup: ## Setup git-hooks
 	    @composer run set-up
 
-    copy-cs-config: ## Setup phpcs config
+    copy-cs-config: ## Setup cs config
         @composer run copy-cs-config
 
     options?=
@@ -91,7 +91,7 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
     setup: ## Setup git-hooks
 	    @make det cmd="composer.phar run set-up"
 
-    copy-cs-config: ## Setup phpcs config
+    copy-cs-config: ## Setup cs config
         @make det cmd="composer.phar run copy-cs-config"
 
     options?=
