@@ -15,7 +15,7 @@ final class CopyCsConfigCommand extends Command
     use FilesystemTrait;
 
     public const CS_CONFIG_URL = 'https://github.com/Clearfacts/cf-codestyle-bundle/raw/main/templates/cs/.php-cs-fixer.dist.php';
-    public const LINT_CONFIG_URL = 'https://github.com/Clearfacts/eslint-config/raw/main/index.js';
+    public const LINT_CONFIG_URL = 'https://github.com/Clearfacts/cf-codestyle-bundle/raw/main/templates/cs/.eslintrc.dist';
 
     protected static $defaultName = 'clearfacts:codestyle:copy-cs-config';
 
