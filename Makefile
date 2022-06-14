@@ -20,7 +20,7 @@ setup: ## Setup git-hooks
 copy-cs-config: ## Setup cs config
 	@composer run copy-cs-config
 
-# Linting and testing
+# Linting
 options?=
 files?="src\ tests"
 phpcs: ## Check phpcs.
@@ -29,6 +29,17 @@ phpcs: ## Check phpcs.
 phpcs-fix: ## Check phpcs and try to automatically fix issues.
 	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
+eslint: ## Check eslint.
+	@eslint --fix-dry-run --config=.eslintrc $(options) $(files)
+
+eslint-fix: ## Check eslint and try to automatically fix issues.
+	@eslint --fix --config=.eslintrc $(options) $(files)
+
+# no dry-run possible for twig.
+twig-fix: ## Check twig and try to automatically fix issues.
+	@bin/console lint:twig --ansi $(options) $(files)
+
+# Testing
 args?="tests"
 test: ## Run tests.
 	@bin/phpunit $(args)

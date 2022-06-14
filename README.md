@@ -57,12 +57,22 @@ Depending on whether your project is running locally, or via docker-compose, the
         @composer run copy-cs-config
 
     options?=
-    files?=src/
+    files?="src\ tests"
     phpcs: ## Check phpcs.
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
-    
+
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+
+    eslint: ## Check eslint.
+        @eslint --fix-dry-run --config=.eslintrc $(options) $(files)
+
+    eslint-fix: ## Check eslint and try to automatically fix issues.
+        @eslint --fix --config=.eslintrc $(options) $(files)
+
+    # no dry-run possible for twig.
+    twig-fix: ## Check twig and try to automatically fix issues.
+        @bin/console lint:twig --ansi $(options) $(files)
 ```
 
 ### Docker setup
@@ -85,12 +95,22 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
         @make det cmd="composer.phar run copy-cs-config"
 
     options?=
-    files?=src/
+    files?="src\ tests"
     phpcs: ## Check phpcs.
         @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
-    
+
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
         @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+
+    eslint: ## Check eslint.
+        @make dc cmd="run eslint --fix-dry-run --config=.eslintrc $(options) $(files)"
+
+    eslint-fix: ## Check eslint and try to automatically fix issues.
+        @make dc cmd="run eslint --fix --config=.eslintrc $(options) $(files)"
+
+    # no dry-run possible for twig.
+    twig-fix: ## Check twig and try to automatically fix issues.
+        @make det cmd="bin/console lint:twig --ansi $(options) $(files)"
 ```
 
 
