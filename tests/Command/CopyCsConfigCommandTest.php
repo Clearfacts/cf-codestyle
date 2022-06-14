@@ -12,7 +12,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 class CopyCsConfigCommandTest extends TestCase
 {
     private const PHPCS_PATH = __DIR__ . '/.php-cs-fixer.dist.php';
-    private const ESLINT_PATH = __DIR__ . '/.eslintrc';
+    private const ESLINT_PATH = __DIR__ . '/.eslintrc.dist';
 
     public function setUp(): void
     {

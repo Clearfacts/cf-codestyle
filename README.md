@@ -65,10 +65,10 @@ Depending on whether your project is running locally, or via docker-compose, the
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
     eslint: ## Check eslint.
-        @eslint --fix-dry-run --config=.eslintrc $(options) $(files)
+        @eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)
 
     eslint-fix: ## Check eslint and try to automatically fix issues.
-        @eslint --fix --config=.eslintrc $(options) $(files)
+        @eslint --fix --config=.eslintrc.dist $(options) $(files)
 
     # no dry-run possible for twig.
     twig-fix: ## Check twig and try to automatically fix issues.
@@ -103,10 +103,10 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
         @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
 
     eslint: ## Check eslint.
-        @make dc cmd="run eslint --fix-dry-run --config=.eslintrc $(options) $(files)"
+        @make dc cmd="run eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)"
 
     eslint-fix: ## Check eslint and try to automatically fix issues.
-        @make dc cmd="run eslint --fix --config=.eslintrc $(options) $(files)"
+        @make dc cmd="run eslint --fix --config=.eslintrc.dist $(options) $(files)"
 
     # no dry-run possible for twig.
     twig-fix: ## Check twig and try to automatically fix issues.

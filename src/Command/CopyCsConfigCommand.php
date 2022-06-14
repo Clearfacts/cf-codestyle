@@ -84,7 +84,7 @@ final class CopyCsConfigCommand extends Command
 
     private function setupLint(string $root): void
     {
-        $lintConfig = $root . '/.eslintrc';
+        $lintConfig = $root . '/.eslintrc.dist';
         $modified = @filemtime($lintConfig);
         if ($modified && (time() - $modified < 604800)) {
             $this->io->warning('Lint config already exists and is less than a week old');
@@ -107,7 +107,7 @@ final class CopyCsConfigCommand extends Command
         }
 
         /** @var SplFileInfo $file */
-        foreach ($this->getFinder()->files()->ignoreDotFiles(false)->in(__DIR__ . '/../../templates/cs')->name('.eslintrc') as $file) {
+        foreach ($this->getFinder()->files()->ignoreDotFiles(false)->in(__DIR__ . '/../../templates/cs')->name('.eslintrc.dist') as $file) {
             $configPath = $root . '/' . $file->getFilename();
             $this->getFileSystem()->copy(
                 $file->getRealPath(),
