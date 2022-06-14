@@ -17,8 +17,8 @@ composer: ## Do a composer install for the php project.
 setup: ## Setup git-hooks
 	@composer run set-up
 
-copy-phpcs-config: ## Setup phpcs config
-	@composer run copy-phpcs-config
+copy-cs-config: ## Setup cs config
+	@composer run copy-cs-config
 
 # Linting and testing
 options?=

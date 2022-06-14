@@ -14,8 +14,8 @@ final class CopyCsConfigCommand extends Command
 {
     use FilesystemTrait;
 
-    public const CONFIG_URL =
-        'https://github.com/Clearfacts/cf-codestyle-bundle/raw/main/templates/cs/.php-cs-fixer.dist.php';
+    public const CS_CONFIG_URL = 'https://github.com/Clearfacts/cf-codestyle-bundle/raw/main/templates/cs/.php-cs-fixer.dist.php';
+    public const LINT_CONFIG_URL = 'https://github.com/Clearfacts/eslint-config/raw/main/index.js';
 
     protected static $defaultName = 'clearfacts:codestyle:copy-cs-config';
 
@@ -41,12 +41,14 @@ final class CopyCsConfigCommand extends Command
     {
         $this->io->title('Preparing to copy cs config');
 
-        $this->setup($input->getOption('root'));
+        $root = $input->getOption('root');
+        $this->setupCs($root);
+        $this->setupLint($root);
 
         return 0;
     }
 
-    private function setup(string $root): void
+    private function setupCs(string $root): void
     {
         $phpcsConfig = $root . '/.php-cs-fixer.dist.php';
         $modified = @filemtime($phpcsConfig);
@@ -56,7 +58,7 @@ final class CopyCsConfigCommand extends Command
             return;
         }
 
-        $contents = @file_get_contents(self::CONFIG_URL, false, stream_context_create([
+        $contents = @file_get_contents(self::CS_CONFIG_URL, false, stream_context_create([
             'http' => [
                 'connect_timeout' => 2,
                 'timeout' => 5,
@@ -64,7 +66,7 @@ final class CopyCsConfigCommand extends Command
         ]));
         if ($contents) {
             $this->getFileSystem()->dumpFile($phpcsConfig, $contents);
-            $this->io->success('Copied cs config from ' . self::CONFIG_URL);
+            $this->io->success('Copied cs config from ' . self::CS_CONFIG_URL);
 
             return;
         }
@@ -79,4 +81,40 @@ final class CopyCsConfigCommand extends Command
             $this->io->success('Copied cs config from vendor package');
         }
     }
+
+    private function setupLint(string $root): void
+    {
+        $lintConfig = $root . '/.eslintrc';
+        $modified = @filemtime($lintConfig);
+        if ($modified && (time() - $modified < 604800)) {
+            $this->io->warning('Lint config already exists and is less than a week old');
+
+            return;
+        }
+
+        $contents = @file_get_contents(self::LINT_CONFIG_URL, false, stream_context_create([
+            'http' => [
+                'connect_timeout' => 2,
+                'timeout' => 5,
+            ],
+        ]));
+        if ($contents) {
+            $contents = str_replace('module.exports = ', '', $contents);
+            $this->getFileSystem()->dumpFile($lintConfig, $contents);
+            $this->io->success('Copied lint config from ' . self::LINT_CONFIG_URL);
+
+            return;
+        }
+
+        /** @var SplFileInfo $file */
+        foreach ($this->getFinder()->files()->ignoreDotFiles(false)->in(__DIR__ . '/../../templates/cs')->name('.eslintrc') as $file) {
+            $configPath = $root . '/' . $file->getFilename();
+            $this->getFileSystem()->copy(
+                $file->getRealPath(),
+                $configPath
+            );
+            $this->io->success('Copied lint config from vendor package');
+        }
+    }
+
 }

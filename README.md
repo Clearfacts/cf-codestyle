@@ -30,10 +30,10 @@ At the moment we have some general rules applied, bundled under the @Symfony dir
   ...,
     "scripts": {
         "set-up": [
-           "@copy-phpcs-config",
+           "@copy-cs-config",
            "vendor/bin/cf-codestyle clearfacts:codestyle:hooks-setup"
         ],
-        "copy-phpcs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
+        "copy-cs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
   ...
 ```
 
@@ -53,9 +53,9 @@ Depending on whether your project is running locally, or via docker-compose, the
     setup: ## Setup git-hooks
 	    @composer run set-up
 
-    copy-phpcs-config: ## Setup phpcs config
-        @composer run copy-phpcs-config
-    
+    copy-cs-config: ## Setup phpcs config
+        @composer run copy-cs-config
+
     options?=
     files?=src/
     phpcs: ## Check phpcs.
@@ -81,9 +81,9 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
     setup: ## Setup git-hooks
 	    @make det cmd="composer.phar run set-up"
 
-    copy-phpcs-config: ## Setup phpcs config
-        @make det cmd="composer.phar run copy-phpcs-config"
-    
+    copy-cs-config: ## Setup phpcs config
+        @make det cmd="composer.phar run copy-cs-config"
+
     options?=
     files?=src/
     phpcs: ## Check phpcs.
