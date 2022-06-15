@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Grab the staged files
-stagedFiles=($(git diff --cached --name-only --diff-filter=AM))
+stagedFiles=($(git diff --cached --name-only --diff-filter=AM | grep -e .js$ -e .jsx$ -e .ts$ -e .tsx$))
 files="${stagedFiles[@]}"
 if [ "$files" = '' ]
 then
