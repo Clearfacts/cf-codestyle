@@ -19,7 +19,7 @@ results=$(cat results_twig.txt)
 $(rm results_twig.txt)
 
 # Block the commit from going through if needed
-foundErrors=$(grep -o "begin diff" <<< ${results})
+foundErrors=$(grep -o -e "ERROR" -e "WARNING" <<< ${results})
 returnCode=0
 
 if [ "$foundErrors" != '' ]

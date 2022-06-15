@@ -19,7 +19,7 @@ results=$(cat results_eslint.txt)
 $(rm results_eslint.txt)
 
 # Block the commit from going through if needed
-foundErrors=$(grep -o "begin diff" <<< ${results})
+foundErrors=$(grep -o "problems" <<< ${results})
 returnCode=0
 
 if [ "$foundErrors" != '' ]
