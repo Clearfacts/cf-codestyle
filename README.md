@@ -56,7 +56,7 @@ Depending on whether your project is running locally, or via docker-compose, the
 	    @composer run set-up
 
     copy-cs-config: ## Setup cs config
-        @composer run copy-cs-config
+        @composer run copy-cs-config $(options)
 
     files?="src\ tests"
     phpcs: ## Check phpcs.
@@ -95,7 +95,7 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
 	    @make det cmd="composer.phar run set-up"
 
     copy-cs-config: ## Setup cs config
-        @make det cmd="composer.phar run copy-cs-config"
+        @make det cmd="composer.phar run copy-cs-config $(options)"
 
     files?="src\ tests"
     phpcs: ## Check phpcs.
