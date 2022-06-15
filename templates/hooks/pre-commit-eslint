@@ -31,7 +31,7 @@ then
     command=$(echo "make -s eslint-fix options=\"-o=eslint_output.txt\" files=\"${files}\"")
     echo "$command"
 
-    make -s eslint-fix options="eslint_output.txt" files="${files}"
+    make -s eslint-fix options="-o=eslint_output.txt" files="${files}"
     $(rm eslint_output.txt)
 
     echo "You had some eslint errors, don't forget to add these fixes to git before committing again!" >&2
