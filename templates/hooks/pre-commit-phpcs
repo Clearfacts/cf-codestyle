@@ -28,9 +28,9 @@ then
 
     command=$(echo "make -s phpcs-fix options=\"--quiet\" files=\"${files}\"")
     echo "$command"
-    
+
     make -s phpcs-fix options="--quiet" files="${files}"
-     
+
     echo "You had some phpcs errors, don't forget to add these fixes to git before committing again!" >&2
 
     # Exit so you can stage the files and commit again
