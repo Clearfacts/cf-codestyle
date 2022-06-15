@@ -22,7 +22,7 @@ scriptPath="$(dirname -- "$thisScript")"
 #hooks="pre-commit-phpcs pre-commit-phpstan ..."
 ###########################################################
 
-make -s copy-cs-config
+make -s copy-cs-config options="--quiet"
 
 hooks="pre-commit-phpcs pre-commit-eslint pre-commit-twig %custom_hooks%"
 

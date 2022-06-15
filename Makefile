@@ -10,6 +10,8 @@ init: ## Setup this project.
 	@make composer
 	@make setup
 
+options?=
+
 # Composer commands
 composer: ## Do a composer install for the php project.
 	@composer install
@@ -21,7 +23,6 @@ copy-cs-config: ## Setup cs config
 	@composer run copy-cs-config
 
 # Linting
-options?=
 files?="src\ tests"
 phpcs: ## Check phpcs.
 	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)

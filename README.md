@@ -49,6 +49,8 @@ Depending on whether your project is running locally, or via docker-compose, the
 
 ### Local setup
 ```make
+    options?=
+
     # Linting and testing
     setup: ## Setup git-hooks
 	    @composer run set-up
@@ -56,7 +58,6 @@ Depending on whether your project is running locally, or via docker-compose, the
     copy-cs-config: ## Setup cs config
         @composer run copy-cs-config
 
-    options?=
     files?="src\ tests"
     phpcs: ## Check phpcs.
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
@@ -87,6 +88,8 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
     det: ## An extension of `make dc` that calls `docker-compose exec` on the php-container.
 	    @make dc cmd="exec -T $(phpcontainer) $(cmd)"
 
+    options?=
+
     # Linting and testing
     setup: ## Setup git-hooks
 	    @make det cmd="composer.phar run set-up"
@@ -94,7 +97,6 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
     copy-cs-config: ## Setup cs config
         @make det cmd="composer.phar run copy-cs-config"
 
-    options?=
     files?="src\ tests"
     phpcs: ## Check phpcs.
         @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"

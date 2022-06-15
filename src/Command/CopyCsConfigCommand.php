@@ -29,7 +29,9 @@ final class CopyCsConfigCommand extends Command
         $this
             ->setName(self::$defaultName)
             ->setDescription('Copy latest code sniffing config')
-            ->addOption('root', 'r', InputOption::VALUE_OPTIONAL, 'Root directory of the project', '.');
+            ->addOption('root', 'r', InputOption::VALUE_OPTIONAL, 'Root directory of the project', '.')
+            ->addOption('quiet', 'q', InputOption::VALUE_NONE, "Don't output anything unless an action was actually undertaken")
+        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -39,20 +41,28 @@ final class CopyCsConfigCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->io->title('Preparing to copy cs config');
-
         $root = $input->getOption('root');
-        $this->setupCs($root);
-        $this->setupLint($root);
+        $quiet = (bool) $input->getOption('quiet');
+
+        if (!$quiet) {
+            $this->io->title('Preparing to copy cs config');
+        }
+
+        $this->setupCs($root, $quiet);
+        $this->setupLint($root, $quiet);
 
         return 0;
     }
 
-    private function setupCs(string $root): void
+    private function setupCs(string $root, bool $quiet): void
     {
         $phpcsConfig = $root . '/.php-cs-fixer.dist.php';
         $modified = @filemtime($phpcsConfig);
         if ($modified && (time() - $modified < 604800)) {
+            if (!$quiet) {
+                $this->io->warning('Cs config already exists and is less than a week old');
+            }
+
             return;
         }
 
@@ -80,11 +90,15 @@ final class CopyCsConfigCommand extends Command
         }
     }
 
-    private function setupLint(string $root): void
+    private function setupLint(string $root, bool $quiet): void
     {
         $lintConfig = $root . '/.eslintrc.dist';
         $modified = @filemtime($lintConfig);
         if ($modified && (time() - $modified < 604800)) {
+            if (!$quiet) {
+                $this->io->warning('Lint config already exists and is less than a week old');
+            }
+
             return;
         }
 
