@@ -109,7 +109,6 @@ final class CopyCsConfigCommand extends Command
             ],
         ]));
         if ($contents) {
-            $contents = str_replace('module.exports = ', '', $contents);
             $this->getFileSystem()->dumpFile($lintConfig, $contents);
             $this->io->success('Copied lint config from ' . self::LINT_CONFIG_URL);
 
