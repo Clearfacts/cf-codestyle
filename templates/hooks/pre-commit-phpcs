@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-make -s copy-phpcs-config
-
 # Grab the staged files
-stagedFiles=($(git diff --cached --name-only --diff-filter=AM))
+stagedFiles=($(git diff --cached --name-only --diff-filter=AM | grep -e .php$))
 files="${stagedFiles[@]}"
 if [ "$files" = '' ]
 then
@@ -15,10 +13,10 @@ command=$(echo "make -s phpcs files=\"${files}\"")
 echo "$command"
 
 # Run the command on our docker container and capture the results
-make -s phpcs files="${files}" >> results.txt
+make -s phpcs files="${files}" >> results_phpcs.txt
 
-results=$(cat results.txt)
-$(rm results.txt)
+results=$(cat results_phpcs.txt)
+$(rm results_phpcs.txt)
 
 # Block the commit from going through if needed
 foundErrors=$(grep -o "begin diff" <<< ${results})
@@ -30,10 +28,10 @@ then
 
     command=$(echo "make -s phpcs-fix options=\"--quiet\" files=\"${files}\"")
     echo "$command"
-    
+
     make -s phpcs-fix options="--quiet" files="${files}"
-     
-    echo "You had some phpcs errors, don't forget to add these fixes to git before commiting again!" >&2
+
+    echo "You had some phpcs errors, don't forget to add these fixes to git before committing again!" >&2
 
     # Exit so you can stage the files and commit again
     returnCode=1

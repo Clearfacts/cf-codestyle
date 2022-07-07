@@ -46,6 +46,8 @@ class SetupGitHooksCommandTest extends TestCase
         $this->assertStringContainsString('[OK] Default hooks copied', $output);
         $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit'));
         $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-phpcs'));
+        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-eslint'));
+        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-twig'));
         $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'test-hook'));
         $this->assertStringContainsString('test-hook', file_get_contents(self::GIT_HOOKS_PATH . '/pre-commit'));
     }

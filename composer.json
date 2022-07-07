@@ -14,20 +14,18 @@
         "symfony/test-pack": "^1.0"
     },
     "autoload": {
-        "psr-4": { 
+        "psr-4": {
             "Clearfacts\\Bundle\\CodestyleBundle\\": "src/",
-            "Clearfacts\\Bundle\\CodestyleBundle\\Tests\\": "tests/" 
+            "Clearfacts\\Bundle\\CodestyleBundle\\Tests\\": "tests/"
         }
     },
     "bin": ["bin/cf-codestyle"],
     "scripts": {
         "set-up": [
-            "@copy-phpcs-config",
+            "@copy-cs-config",
             "./bin/cf-codestyle clearfacts:codestyle:hooks-setup"
         ],
-        "copy-phpcs-config": "bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
-        "lint-phpcs": "bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi src/ tests/",
-        "lint-phpcs-fix": "bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi src/ tests/"
+        "copy-cs-config": "bin/cf-codestyle clearfacts:codestyle:copy-cs-config"
     },
     "config": {
         "bin-dir": "bin",

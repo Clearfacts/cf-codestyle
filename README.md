@@ -30,10 +30,10 @@ At the moment we have some general rules applied, bundled under the @Symfony dir
   ...,
     "scripts": {
         "set-up": [
-           "@copy-phpcs-config",
+           "@copy-cs-config",
            "vendor/bin/cf-codestyle clearfacts:codestyle:hooks-setup"
         ],
-        "copy-phpcs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
+        "copy-cs-config": "vendor/bin/cf-codestyle clearfacts:codestyle:copy-cs-config",
   ...
 ```
 
@@ -49,20 +49,31 @@ Depending on whether your project is running locally, or via docker-compose, the
 
 ### Local setup
 ```make
+    options?=
+
     # Linting and testing
     setup: ## Setup git-hooks
 	    @composer run set-up
 
-    copy-phpcs-config: ## Setup phpcs config
-        @composer run copy-phpcs-config
-    
-    options?=
-    files?=src/
+    copy-cs-config: ## Setup cs config
+        @composer run copy-cs-config $(options)
+
+    files?="src\ tests"
     phpcs: ## Check phpcs.
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
-    
+
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
         @vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+
+    eslint: ## Check eslint.
+        @eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)
+
+    eslint-fix: ## Check eslint and try to automatically fix issues.
+        @eslint --fix --config=.eslintrc.dist $(options) $(files)
+
+    # no dry-run possible for twig.
+    twig-fix: ## Check twig and try to automatically fix issues.
+        @bin/console lint:twig --ansi $(options) $(files)
 ```
 
 ### Docker setup
@@ -77,20 +88,31 @@ When using docker-compose, your `Makefile` will slightly differ. Important here 
     det: ## An extension of `make dc` that calls `docker-compose exec` on the php-container.
 	    @make dc cmd="exec -T $(phpcontainer) $(cmd)"
 
+    options?=
+
     # Linting and testing
     setup: ## Setup git-hooks
 	    @make det cmd="composer.phar run set-up"
 
-    copy-phpcs-config: ## Setup phpcs config
-        @make det cmd="composer.phar run copy-phpcs-config"
-    
-    options?=
-    files?=src/
+    copy-cs-config: ## Setup cs config
+        @make det cmd="composer.phar run copy-cs-config $(options)"
+
+    files?="src\ tests"
     phpcs: ## Check phpcs.
         @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
-    
+
     phpcs-fix: ## Check phpcs and try to automatically fix issues.
         @make det cmd="vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)"
+
+    eslint: ## Check eslint.
+        @make dc cmd="run eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)"
+
+    eslint-fix: ## Check eslint and try to automatically fix issues.
+        @make dc cmd="run eslint --fix --config=.eslintrc.dist $(options) $(files)"
+
+    # no dry-run possible for twig.
+    twig-fix: ## Check twig and try to automatically fix issues.
+        @make det cmd="bin/console lint:twig --ansi $(options) $(files)"
 ```
 
 

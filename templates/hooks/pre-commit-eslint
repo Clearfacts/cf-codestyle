@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Grab the staged files
+stagedFiles=($(git diff --cached --name-only --diff-filter=AM | grep -e .js$ -e .jsx$ -e .ts$ -e .tsx$))
+files="${stagedFiles[@]}"
+if [ "$files" = '' ]
+then
+  exit 0
+fi
+
+# Construct the eslint command.
+command=$(echo "make -s eslint files=\"${files}\"")
+echo "$command"
+
+# Run the command on our docker container and capture the results
+make -s eslint files="${files}" >> results_eslint.txt
+
+results=$(cat results_eslint.txt)
+$(rm results_eslint.txt)
+
+# Block the commit from going through if needed
+foundErrors=$(grep -o "problems" <<< ${results})
+returnCode=0
+
+if [ "$foundErrors" != '' ]
+then
+    echo "${results}" >&2
+
+    # Output to file to prevent output from errors to be printed to console.
+    # The --quiet option only prevents output from warnings.
+    command=$(echo "make -s eslint-fix options=\"-o=eslint_output.txt\" files=\"${files}\"")
+    echo "$command"
+
+    make -s eslint-fix options="-o=eslint_output.txt" files="${files}"
+    $(rm eslint_output.txt)
+
+    echo "You had some eslint errors, don't forget to add these fixes to git before committing again!" >&2
+
+    # Exit so you can stage the files and commit again
+    returnCode=1
+fi
+exit $returnCode

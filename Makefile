@@ -10,6 +10,8 @@ init: ## Setup this project.
 	@make composer
 	@make setup
 
+options?=
+
 # Composer commands
 composer: ## Do a composer install for the php project.
 	@composer install
@@ -17,11 +19,10 @@ composer: ## Do a composer install for the php project.
 setup: ## Setup git-hooks
 	@composer run set-up
 
-copy-phpcs-config: ## Setup phpcs config
-	@composer run copy-phpcs-config
+copy-cs-config: ## Setup cs config
+	@composer run copy-cs-config
 
-# Linting and testing
-options?=
+# Linting
 files?="src\ tests"
 phpcs: ## Check phpcs.
 	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
@@ -29,6 +30,17 @@ phpcs: ## Check phpcs.
 phpcs-fix: ## Check phpcs and try to automatically fix issues.
 	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
+eslint: ## Check eslint.
+	@eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)
+
+eslint-fix: ## Check eslint and try to automatically fix issues.
+	@eslint --fix --config=.eslintrc.dist $(options) $(files)
+
+# no dry-run possible for twig.
+twig-fix: ## Check twig and try to automatically fix issues.
+	@bin/console lint:twig --ansi $(options) $(files)
+
+# Testing
 args?="tests"
 test: ## Run tests.
 	@bin/phpunit $(args)
