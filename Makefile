@@ -1,6 +1,6 @@
-# cf-codestyle makefile
-
 .DEFAULT_GOAL := list
+
+docker=docker run -it --volume $$PWD:/var/www/html -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:8.1.7
 
 .PHONY: list
 list:
@@ -10,25 +10,34 @@ init: ## Setup this project.
 	@make composer
 	@make setup
 
-options?=
-
-# Composer commands
-composer: ## Do a composer install for the php project.
-	@composer install
-
 setup: ## Setup git-hooks
-	@composer run set-up
+	@$(docker) composer.phar run set-up
 
 copy-cs-config: ## Setup cs config
-	@composer run copy-cs-config
+	@$(docker) composer.phar run copy-cs-config
 
-# Linting
-files?="src\ tests"
+bash: ## ssh into the php container.
+	@$(docker) bash
+
+# Composer commands
+composer: ## Do a composer install.
+	@$(docker) composer.phar install
+composer-update: ## Do a composer update.
+	@$(docker) composer.phar update
+
+# Linting and testing
+args?=
+options?=
+files?=src/
+
+test: ## Run all tests with an optional parameter `args` to run a specific suite or test-file, or pass some other testing arguments.
+	@$(docker) vendor/bin/phpunit $(args)
+
 phpcs: ## Check phpcs.
-	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+	@$(docker) vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
 phpcs-fix: ## Check phpcs and try to automatically fix issues.
-	@bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+	@$(docker) vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
 eslint: ## Check eslint.
 	@eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)
@@ -40,7 +49,5 @@ eslint-fix: ## Check eslint and try to automatically fix issues.
 twig-fix: ## Check twig and try to automatically fix issues.
 	@bin/console lint:twig --ansi $(options) $(files)
 
-# Testing
-args?="tests"
-test: ## Run tests.
-	@bin/phpunit $(args)
+psalm: ## Check phpcs and try to automatically fix issues.
+	@$(docker) vendor/bin/psalm $(options)

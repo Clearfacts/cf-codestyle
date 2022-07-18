@@ -16,11 +16,6 @@ final class SetupGitHooksCommand extends Command
 
     protected static $defaultName = 'clearfacts:codestyle:hooks-setup';
 
-    /**
-     * @var SymfonyStyle
-     */
-    private $io;
-
     protected function configure(): void
     {
         $this
@@ -30,40 +25,30 @@ final class SetupGitHooksCommand extends Command
             ->addOption('custom-hooks-dir', 'chr', InputOption::VALUE_OPTIONAL, 'Extra hooks to be checked pre-commit', null);
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output): void
-    {
-        $this->io = new SymfonyStyle($input, $output);
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->io->title('Preparing git-hooks');
+        $io = new SymfonyStyle($input, $output);
 
-        $this->setup($input->getOption('root'), $input->getOption('custom-hooks-dir'));
+        $root = $input->getOption('root');
+        $customHooksDir = $input->getOption('custom-hooks-dir');
 
-        return 0;
-    }
-
-    private function setup(string $root, ?string $customHooksDir): void
-    {
         $customHooks = [];
-        /** @var SplFileInfo $file */
         if (null !== $customHooksDir) {
             foreach ($this->getFinder()->files()->in($root . $customHooksDir) as $file) {
                 $gitHooksPath = $root . '/.git/hooks/' . $file->getFilename();
                 $this->getFileSystem()->copy(
                     $file->getRealPath(),
                     $gitHooksPath,
-                    true
+                    true,
                 );
 
                 $customHooks[] = $file->getFilename();
 
                 $this->getFileSystem()->chmod([$gitHooksPath], 0755);
             }
-
-            $this->io->success('Custom hooks copied');
         }
+
+        $io->success('Custom hooks copied');
 
         foreach ($this->getFinder()->files()->in(__DIR__ . '/../../templates/hooks') as $file) {
             $gitHooksPath = $root . '/.git/hooks/' . $file->getFilename();
@@ -72,12 +57,14 @@ final class SetupGitHooksCommand extends Command
                 $gitHooksPath,
                 strtr($file->getContents(), [
                     '%custom_hooks%' => implode(' ', $customHooks),
-                ])
+                ]),
             );
 
             $this->getFileSystem()->chmod([$gitHooksPath], 0755);
         }
 
-        $this->io->success('Default hooks copied');
+        $io->success('Default hooks copied');
+
+        return self::SUCCESS;
     }
 }

@@ -4,3 +4,4 @@ bin/
 !bin/cf-codestyle*
 .php-cs-fixer.dist.php
 !templates/cs/.php-cs-fixer.dist.php
+.phpunit.result.cache
