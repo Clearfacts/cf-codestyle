@@ -41,14 +41,13 @@ class SetupGitHooksCommandTest extends TestCase
         // Then
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Preparing git-hooks', $output);
         $this->assertStringContainsString('[OK] Custom hooks copied', $output);
         $this->assertStringContainsString('[OK] Default hooks copied', $output);
-        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit'));
-        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-phpcs'));
-        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-eslint'));
-        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'pre-commit-twig'));
-        $this->assertTrue(file_exists(self::GIT_HOOKS_PATH . 'test-hook'));
+        $this->assertFileExists(self::GIT_HOOKS_PATH . 'pre-commit');
+        $this->assertFileExists(self::GIT_HOOKS_PATH . 'pre-commit-phpcs');
+        $this->assertFileExists(self::GIT_HOOKS_PATH . 'pre-commit-eslint');
+        $this->assertFileExists(self::GIT_HOOKS_PATH . 'pre-commit-twig');
+        $this->assertFileExists(self::GIT_HOOKS_PATH . 'test-hook');
         $this->assertStringContainsString('test-hook', file_get_contents(self::GIT_HOOKS_PATH . '/pre-commit'));
     }
 

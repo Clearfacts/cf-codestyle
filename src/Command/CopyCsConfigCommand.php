@@ -14,15 +14,11 @@ final class CopyCsConfigCommand extends Command
 {
     use FilesystemTrait;
 
-    public const CS_CONFIG_URL = 'https://github.com/Clearfacts/cf-codestyle-bundle/raw/main/templates/cs/.php-cs-fixer.dist.php';
-    public const LINT_CONFIG_URL = 'https://github.com/Clearfacts/cf-codestyle-bundle/raw/main/templates/cs/.eslintrc.dist';
-
     protected static $defaultName = 'clearfacts:codestyle:copy-cs-config';
 
-    /**
-     * @var SymfonyStyle
-     */
-    private $io;
+    private ?SymfonyStyle $io = null;
+    private bool $quiet = false;
+    private string $root = '.';
 
     protected function configure(): void
     {
@@ -37,93 +33,57 @@ final class CopyCsConfigCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
+        $this->root = $input->getOption('root');
+        $this->quiet = (bool) $input->getOption('quiet');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $root = $input->getOption('root');
-        $quiet = (bool) $input->getOption('quiet');
-
-        if (!$quiet) {
-            $this->io->title('Preparing to copy cs config');
+        if (!$this->quiet) {
+            $this->io?->title('Preparing to copy cs config');
         }
 
-        $this->setupCs($root, $quiet);
-        $this->setupLint($root, $quiet);
+        try {
+            $this->copyConfig($this->root . '/.php-cs-fixer.dist.php', 'phpcs', '.php-cs-fixer-8.1.dist.php');
+            $this->copyConfig($this->root . '/.eslintrc.dist', 'eslint', '.eslintrc.dist');
+        } catch (\Throwable $e) {
+            $this->io?->error($e->getMessage());
 
-        return 0;
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
     }
 
-    private function setupCs(string $root, bool $quiet): void
+    private function copyConfig(string $destination, string $type, string $template): void
     {
-        $phpcsConfig = $root . '/.php-cs-fixer.dist.php';
-        $modified = @filemtime($phpcsConfig);
+        $modified = @filemtime($destination);
         if ($modified && (time() - $modified < 604800)) {
-            if (!$quiet) {
-                $this->io->warning('Cs config already exists and is less than a week old');
+            if (!$this->quiet) {
+                $this->io?->warning("$type config already exists and is less than a week old");
             }
 
             return;
         }
 
-        $contents = @file_get_contents(self::CS_CONFIG_URL, false, stream_context_create([
-            'http' => [
-                'connect_timeout' => 2,
-                'timeout' => 5,
-            ],
-        ]));
-        if ($contents) {
-            $this->getFileSystem()->dumpFile($phpcsConfig, $contents);
-            $this->io->success('Copied cs config from ' . self::CS_CONFIG_URL);
+        $files = $this->getFinder()
+            ->ignoreDotFiles(false)
+            ->in(__DIR__ . '/../../templates/cs')
+            ->files()
+            ->name($template);
 
-            return;
+        if ($files->count() > 1) {
+            throw new \RuntimeException("Expected to find a single $type config file but found multiple");
         }
 
-        /** @var SplFileInfo $file */
-        foreach ($this->getFinder()->files()->ignoreDotFiles(false)->in(__DIR__ . '/../../templates/cs')->name('.php-cs-fixer.dist.php') as $file) {
-            $configPath = $root . '/' . $file->getFilename();
+        foreach ($files as $file) {
             $this->getFileSystem()->copy(
                 $file->getRealPath(),
-                $configPath
+                $destination,
             );
-            $this->io->success('Copied cs config from vendor package');
-        }
-    }
-
-    private function setupLint(string $root, bool $quiet): void
-    {
-        $lintConfig = $root . '/.eslintrc.dist';
-        $modified = @filemtime($lintConfig);
-        if ($modified && (time() - $modified < 604800)) {
-            if (!$quiet) {
-                $this->io->warning('Lint config already exists and is less than a week old');
-            }
-
-            return;
         }
 
-        $contents = @file_get_contents(self::LINT_CONFIG_URL, false, stream_context_create([
-            'http' => [
-                'connect_timeout' => 2,
-                'timeout' => 5,
-            ],
-        ]));
-        if ($contents) {
-            $this->getFileSystem()->dumpFile($lintConfig, $contents);
-            $this->io->success('Copied lint config from ' . self::LINT_CONFIG_URL);
-
-            return;
-        }
-
-        /** @var SplFileInfo $file */
-        foreach ($this->getFinder()->files()->ignoreDotFiles(false)->in(__DIR__ . '/../../templates/cs')->name('.eslintrc.dist') as $file) {
-            $configPath = $root . '/' . $file->getFilename();
-            $this->getFileSystem()->copy(
-                $file->getRealPath(),
-                $configPath
-            );
-            $this->io->success('Copied lint config from vendor package');
-        }
+        $this->io?->success("Copied $type config from vendor package");
     }
 
 }

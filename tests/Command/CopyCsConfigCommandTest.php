@@ -8,6 +8,7 @@ use Clearfacts\Bundle\CodestyleBundle\Command\CopyCsConfigCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use PhpCsFixer\Config;
 
 class CopyCsConfigCommandTest extends TestCase
 {
@@ -43,11 +44,11 @@ class CopyCsConfigCommandTest extends TestCase
         // Then
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Preparing to copy cs config', $output);
-        $this->assertStringContainsString('[OK] Copied cs config', $output);
-        $this->assertTrue(file_exists(self::PHPCS_PATH));
-        $this->assertTrue(file_exists(self::ESLINT_PATH));
-        $this->assertStringContainsString('PhpCsFixer\Config', file_get_contents(self::PHPCS_PATH));
-        $this->assertStringContainsString('eslint:recommended', file_get_contents(self::ESLINT_PATH));
+        $this->assertStringContainsString('[OK] Copied phpcs config', $output);
+        $this->assertStringContainsString('[OK] Copied eslint config', $output);
+        $this->assertFileExists(self::PHPCS_PATH);
+        $this->assertFileExists(self::ESLINT_PATH);
+        $this->assertStringContainsString(Config::class, file_get_contents(self::PHPCS_PATH));
+        $this->assertStringContainsString('"rules": {', file_get_contents(self::ESLINT_PATH));
     }
 }
