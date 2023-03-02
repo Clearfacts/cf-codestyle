@@ -8,32 +8,6 @@ then
   exit 0
 fi
 
-# Construct the phpcs command.
-command=$(echo "make -s phpcs files=\"${files}\"")
-echo "$command"
-
-# Run the command on our docker container and capture the results
-make -s phpcs files="${files}" >> results_phpcs.txt
-
-results=$(cat results_phpcs.txt)
-$(rm results_phpcs.txt)
-
-# Block the commit from going through if needed
-foundErrors=$(grep -o "begin diff" <<< ${results})
-returnCode=0
-
-if [ "$foundErrors" != '' ]
-then
-    echo "${results}" >&2
-
-    command=$(echo "make -s phpcs-fix options=\"--quiet\" files=\"${files}\"")
-    echo "$command"
-
-    make -s phpcs-fix options="--quiet" files="${files}"
-
-    echo "You had some phpcs errors, don't forget to add these fixes to git before committing again!" >&2
-
-    # Exit so you can stage the files and commit again
-    returnCode=1
-fi
-exit $returnCode
+# Run fixer and add changes to the commit
+make -s phpcs-fix files="${files}"
+git add ${files}
