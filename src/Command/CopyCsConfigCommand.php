@@ -57,15 +57,6 @@ final class CopyCsConfigCommand extends Command
 
     private function copyConfig(string $destination, string $type, string $template): void
     {
-        $modified = @filemtime($destination);
-        if ($modified && (time() - $modified < 604800)) {
-            if (!$this->quiet) {
-                $this->io?->warning("$type config already exists and is less than a week old");
-            }
-
-            return;
-        }
-
         $files = $this->getFinder()
             ->ignoreDotFiles(false)
             ->in(__DIR__ . '/../../templates/cs')
