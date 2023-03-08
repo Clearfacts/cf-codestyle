@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ "${ENABLE_PSALM:-1}" != 1 ]
+if [ "${CF_COMMIT_PSALM_ENABLED:-1}" != 1 ]
 then
   echo "pre-commit psalm disabled"
   exit 0
