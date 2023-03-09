@@ -8,6 +8,14 @@ then
   exit 0
 fi
 
+if [ "${CF_COMMIT_PHPCS_AUTOFIX_ENABLED:-0}" == 1 ]
+then
+  # Run fixer and add changes to the commit
+  make -s phpcs-fix files="${files}"
+  git add ${files}
+  exit 0
+fi
+
 # Construct the phpcs command.
 command=$(echo "make -s phpcs files=\"${files}\"")
 echo "$command"

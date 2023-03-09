@@ -24,7 +24,7 @@ scriptPath="$(dirname -- "$thisScript")"
 
 make -s copy-cs-config options="--quiet"
 
-hooks="pre-commit-phpcs pre-commit-eslint pre-commit-twig %custom_hooks%"
+hooks="pre-commit-phpcs pre-commit-psalm pre-commit-eslint pre-commit-twig %custom_hooks%"
 
 for hook in $hooks
 do
