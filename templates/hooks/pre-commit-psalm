@@ -7,7 +7,7 @@ then
 fi
 
 # Grab the staged files
-stagedFiles=($(git diff --cached --name-only --diff-filter=AM | grep -e .php$))
+stagedFiles=($(git diff --cached --name-only --diff-filter=AM src | grep -e .php$))
 files="${stagedFiles[@]}"
 if [ "$files" = '' ]
 then
