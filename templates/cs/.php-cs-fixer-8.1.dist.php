@@ -10,6 +10,7 @@ return (new PhpCsFixer\Config())
         'concat_space' => ['spacing' => 'one'],
         'php_unit_method_casing' => ['case' => 'camel_case'],
         'phpdoc_to_comment' => false,
+        'phpdoc_separation' => false,
         'trailing_comma_in_multiline' => ['elements' => ['arrays', 'arguments', 'parameters', 'match']],
         'no_unused_imports' => true,
         'heredoc_indentation' => true,
