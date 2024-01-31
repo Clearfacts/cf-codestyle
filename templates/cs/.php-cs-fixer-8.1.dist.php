@@ -17,7 +17,7 @@ return (new PhpCsFixer\Config())
         'ternary_to_null_coalescing' => true,
         'assign_null_coalescing_to_coalesce_equal' => true,
         'single_line_throw' => false,
-        'use_nullable_type_declaration' => true,
+        'nullable_type_declaration' => true,
     ])
     ->setFinder($finder)
 ;
