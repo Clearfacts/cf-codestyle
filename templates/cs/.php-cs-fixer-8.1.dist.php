@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         'assign_null_coalescing_to_coalesce_equal' => true,
         'single_line_throw' => false,
         'nullable_type_declaration_for_default_null_value' => true,
+        'phpdoc_align' => false,
     ])
     ->setFinder($finder)
 ;
