@@ -71,6 +71,7 @@ final class CopyCsConfigCommand extends Command
             $this->getFileSystem()->copy(
                 $file->getRealPath(),
                 $destination,
+                true,
             );
         }
 
