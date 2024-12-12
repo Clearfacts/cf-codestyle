@@ -42,7 +42,7 @@ At the moment we have some general rules applied, bundled under the @Symfony dir
 Depending on whether your project is running locally, or via docker-compose, the Makefile is slightly different:
  
  
- -  [Using local setup](#local-setup)
+ - [Using local setup](#local-setup)
   
  - [Using docker-compose](#docker-setup)
 

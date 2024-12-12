@@ -39,15 +39,5 @@ phpcs: ## Check phpcs.
 phpcs-fix: ## Check phpcs and try to automatically fix issues.
 	@$(docker) vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
 
-eslint: ## Check eslint.
-	@eslint --fix-dry-run --config=.eslintrc.dist $(options) $(files)
-
-eslint-fix: ## Check eslint and try to automatically fix issues.
-	@eslint --fix --config=.eslintrc.dist $(options) $(files)
-
-# no dry-run possible for twig.
-twig-fix: ## Check twig and try to automatically fix issues.
-	@bin/console lint:twig --ansi $(options) $(files)
-
 psalm: ## Check phpcs and try to automatically fix issues.
 	@$(docker) vendor/bin/psalm $(options)

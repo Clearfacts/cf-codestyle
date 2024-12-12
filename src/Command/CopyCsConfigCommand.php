@@ -45,7 +45,6 @@ final class CopyCsConfigCommand extends Command
 
         try {
             $this->copyConfig($this->root . '/.php-cs-fixer.dist.php', 'phpcs', '.php-cs-fixer-8.1.dist.php');
-            $this->copyConfig($this->root . '/.eslintrc.dist', 'eslint', '.eslintrc.dist');
         } catch (\Throwable $e) {
             $this->io?->error($e->getMessage());
 
