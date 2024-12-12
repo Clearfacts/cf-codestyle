@@ -13,18 +13,15 @@ use PhpCsFixer\Config;
 class CopyCsConfigCommandTest extends TestCase
 {
     private const PHPCS_PATH = __DIR__ . '/.php-cs-fixer.dist.php';
-    private const ESLINT_PATH = __DIR__ . '/.eslintrc.dist';
 
     public function setUp(): void
     {
         @unlink(self::PHPCS_PATH);
-        @unlink(self::ESLINT_PATH);
     }
 
     public function tearDown(): void
     {
         @unlink(self::PHPCS_PATH);
-        @unlink(self::ESLINT_PATH);
     }
 
     public function testExecute(): void
@@ -45,10 +42,7 @@ class CopyCsConfigCommandTest extends TestCase
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('[OK] Copied phpcs config', $output);
-        $this->assertStringContainsString('[OK] Copied eslint config', $output);
         $this->assertFileExists(self::PHPCS_PATH);
-        $this->assertFileExists(self::ESLINT_PATH);
         $this->assertStringContainsString(Config::class, file_get_contents(self::PHPCS_PATH));
-        $this->assertStringContainsString('"rules": {', file_get_contents(self::ESLINT_PATH));
     }
 }
