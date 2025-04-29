@@ -1,0 +1,33 @@
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: "0 23 * * 1"
+env:
+  CLEARFACTS_CHECKMARX_USER: ${{ secrets.CLEARFACTS_CHECKMARX_USER }}
+  CLEARFACTS_CHECKMARX_PWD: ${{ secrets.CLEARFACTS_CHECKMARX_PWD }}
+  CLEARFACTS_CX_CLIENT_SECRET: ${{ secrets.CLEARFACTS_CX_CLIENT_SECRET }}
+
+name: Checkmarx
+
+jobs:
+  checkmarx:
+    name: checkmarx
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Checkmarx CxFlow Action
+        uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.9
+        with:
+          checkmarx_url: https://test4tools.cchaxcess.com
+          checkmarx_username: ${{ env.CLEARFACTS_CHECKMARX_USER }}
+          checkmarx_password: ${{ env.CLEARFACTS_CHECKMARX_PWD }}
+          checkmarx_client_secret: ${{ env.CLEARFACTS_CX_CLIENT_SECRET }}
+          team: CxServer/SP/Wolters Kluwer TAA/Finca/Clearfacts
+          incremental: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          project: ${{ github.event.repository.name }}
+          params: --checkmarx.version=9.6 -logging.level.org.springframework.web.client.RestTemplate=TRACE --logging.level.com.checkmarx.flow.service=DEBUG --logging.level.org.apache.http.wire=TRACE
