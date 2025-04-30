@@ -1,0 +1,33 @@
+name: Black Duck
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+jobs:
+  blackduck:
+    name: ${{ github.event.repository.name }}
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+      - name: Run Black Duck Detect
+        shell: bash
+        run: bash <(curl -s -L https://detect.blackduck.com/detect10.sh)
+        env:
+          BLACKDUCK.URL: 'https://wolterskluwer.app.blackduck.com/'
+          BLACKDUCK.API.TOKEN: ${{ secrets.BLACKDUCK_ACCESS_TOKEN }}
+          BLACKDUCK.TRUST.CERT: 'true'
+          DETECT.PROJECT.VERSION.NAME: '1.0.0'
+          DETECT.PROJECT.NAME: ${{ github.event.repository.name }}
+          DETECT.PROJECT.TAGS: '041800002496'
+          DETECT.PROJECT.GROUP.NAME: 'dxg.TAA.Clearfacts'
