@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ "${CF_COMMIT_PSALM_ENABLED:-1}" != 1 ]
+if [ "${CF_COMMIT_PHPSTAN_ENABLED:-1}" != 1 ]
 then
-  echo "pre-commit psalm disabled"
+  echo "pre-commit phpstan disabled"
   exit 0
 fi
 
@@ -11,8 +11,8 @@ stagedFiles=($(git diff --cached --name-only --diff-filter=AM src | grep -e .php
 files="${stagedFiles[@]}"
 if [ "$files" = '' ]
 then
-  echo "psalm: no php files to check"
+  echo "phpstan: no php files to check"
   exit 0
 fi
 
-make -s det cmd="vendor/bin/psalm --no-progress --no-cache ${files}"
+make -s det cmd="vendor/bin/phpstan analyse --memory-limit=-1 --no-interaction ${files}"
