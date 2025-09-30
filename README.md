@@ -133,3 +133,8 @@ You can test this by changing a file to non-valid styling and check if is fixed 
 - `--root` The directory your .git/hooks folder is located, by default the root of your project
 - `--custom-hooks-dir` When you have some custom pre-commit hooks you want to install, you can place them in this folder
 
+## Technical debt links
+
+[Barometer IT](https://wolterskluwer.barometerit.com/b/system/041800002496)
+[SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu//dashboard?id=clearfacts%3Acf-codestyle)
+[Black Duck Project](https://wolterskluwer.app.blackduck.com//api/projects/c9e56b35-04b7-486f-81c2-386db3f8055c)
